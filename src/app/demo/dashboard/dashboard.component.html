@@ -158,4 +158,41 @@
       </div>
     </app-card>
   </div>
+
+
+
+  <!-- example.component.html -->
+<div class="container mt-4">
+  <h2>Liste des Objectives</h2>
+  <table class="table table-bordered table-striped">
+    <thead>
+      <tr>
+        <th>Id</th>
+        <th>Title</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let objective of ObjectivesList">
+        <td>{{ objective.id }}</td>
+        <td>{{ objective.objectiveTitle }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+   <button type="submit" (click)="AddObjective(Objective)" class="w-full bg-primary text-primary-foreground p-2 rounded" >Ajouter</button>
+
+
+<input type = "text" [(ngModel)] = "Objective.objectiveTitle" [ngModelOptions]="{standalone: true}" placeholder = "Enter new objective title" class="form-control mb-2">
+
+
+
+</div>
+
+
+
+
+
+
+
+
 </div>

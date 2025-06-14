@@ -55,6 +55,7 @@ if (this.user.username && this.user.password) {
         }, 1500);
 
 
+
       }, error => {
         console.error('Erreur lors de la connexion de l\'admin:', error);
       }

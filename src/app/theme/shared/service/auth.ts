@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { AuthenticationResponse } from '../models/AuthenticationResponse';
 import { User } from '../models/User';
 import { jwtDecode } from 'jwt-decode';
@@ -55,47 +55,48 @@ private baseUrl = 'http://localhost:8085';
 
 
   login(user: User): Observable<AuthenticationResponse> {
-  let options = {
-    headers: new HttpHeaders().set("Content-Type", "application/json")
-  }
-  return this.http.post<AuthenticationResponse>(`${this.baseUrl}/login`, user, options);
+  console.log( this.accessToken);
+  return this.http.post<AuthenticationResponse>(`${this.baseUrl}/login`, user);
 }
 
-
-
-
-
-    logout() {
-this.isAuthenticated=false;
-this.accessToken=undefined;
-this.refreshToken=undefined;
-this.username=undefined;
-this.UserRole=undefined;
-this.userId=undefined;
-this.lastname=undefined;
-this.firstname=undefined;
-window.localStorage.removeItem("accessToken")
-window.localStorage.removeItem("refreshToken")
-window.localStorage.removeItem("id")
+  logout() {
+    this.isAuthenticated=false;
+    this.accessToken=undefined;
+    this.refreshToken=undefined;
+    this.username=undefined;
+    this.UserRole=undefined;
+    this.userId=undefined;
+    this.lastname=undefined;
+    this.firstname=undefined;
+    window.localStorage.removeItem("accessToken")
+    window.localStorage.removeItem("refreshToken")
+    window.localStorage.removeItem("id")
   }
 
 
-loadProfile(){
-  this.isAuthenticated=true;
-  console.log(this.isAuthenticated);
-  this.accessToken = localStorage.getItem('accessToken');
-  console.log(this.accessToken);
-  let decodedJwt:any =  jwtDecode(this.accessToken);
-  this.username=decodedJwt.sub;
-  this.UserRole=decodedJwt.role;
-  this.userId=decodedJwt.id;
-  this.lastname=decodedJwt.lastname;
-  this.firstname=decodedJwt.firstname;
-
+  loadProfile(){
+    this.isAuthenticated=true;
+    console.log(this.isAuthenticated);
+    this.accessToken = localStorage.getItem('accessToken');
+    console.log(this.accessToken);
+    let decodedJwt:any =  jwtDecode(this.accessToken);
+    this.username=decodedJwt.sub;
+    this.UserRole=decodedJwt.role;
+    this.userId=decodedJwt.id;
+    this.lastname=decodedJwt.lastname;
+    this.firstname=decodedJwt.firstname;
   }
 
 
+RefreshToken(): Observable<any> {
+    return this.http.post(`${this.baseUrl}/refresh_token`, {}, { withCredentials: true });
+  }
 
-
+setNewTokens(accessToken: string, refreshToken: string) {
+  this.accessToken = accessToken;
+  this.refreshToken = refreshToken;
+  localStorage.setItem('accessToken', accessToken);
+  localStorage.setItem('refreshToken', refreshToken);
+}
 
 }

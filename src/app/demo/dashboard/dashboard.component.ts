@@ -19,6 +19,9 @@ import '../../../assets/charts/amchart/worldLow.js';
 
 import dataJson from 'src/fake-data/map_data';
 import mapColor from 'src/fake-data/map-color-data.json';
+import { ObjectiveService } from 'src/app/theme/shared/service/objective-service';
+import { Objective } from 'src/app/theme/shared/models/Objective';
+import { Auth } from 'src/app/theme/shared/service/auth';
 
 @Component({
   selector: 'app-dashboard',
@@ -27,8 +30,51 @@ import mapColor from 'src/fake-data/map-color-data.json';
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit {
+ObjectivesList : Objective [] = [];
+Objective: Objective = {
+  id: null,
+objectiveTitle: ''}
+
+  constructor(private objectiveService: ObjectiveService,private auth: Auth) { // Inject the ObjectiveService and Auth service
+    // Initialize the component
+
+  }
+
+getAllObjectives() {
+    this.objectiveService.getAllObjectives().subscribe((data: Objective[]) => {
+      this.ObjectivesList = data;
+      console.log(this.ObjectivesList);
+    }, error => {
+      console.error('Error fetching objectives:', error);
+    });
+  }
+
+
+
+  AddObjective(objective: Objective) {
+    console.log('Adding objective:', objective);
+    this.objectiveService.AddObjective(objective).subscribe((data: Objective) => {
+      console.log('Objective added successfully:', data);
+      // Optionally, refresh the list of objectives after adding a new one
+      window.location.reload();
+      objective.objectiveTitle = ''; // Clear the input field after adding
+      this.Objective = {
+        id: null,
+        objectiveTitle: ''
+      }; // Reset the Objective object
+    }, error => {
+      console.error('Error adding objective:', error);
+    });
+  }
+
+
+
+
+
   // life cycle event
   ngOnInit() {
+    this.auth.loadProfile();
+    this.getAllObjectives();
     setTimeout(() => {
       const latlong = dataJson;
 
